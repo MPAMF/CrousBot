@@ -72,6 +72,11 @@ class CrousBotClient(discord.Client):
 
             msg = ["%s à %s" % (date, name), ""]
 
+            if len(content) == 0 or 'Menu non communiqué' in content[0].get_text():
+                await message.channel.send("Tu mangeras pas à midi fdp (y'a "
+                                           "rien sur le menu)")
+                return
+
             for i in range(0, len(content), 2):
                 text = content[i].get_text()
                 if 'PERSONNELS' in text or 'Origines' in text:
