@@ -13,3 +13,12 @@ Create a .env file and fill it.
 
 Start bot script:
 ```python main.py```
+
+## Docker
+
+Simple docker deployment:
+
+Create a virtualenv.
+
+Then create the container using docker-compose:
+```docker compose up```
