@@ -52,48 +52,52 @@ class CrousBotClient(discord.Client):
                                               'EEEE d MMMM y',
                                               locale='fr_FR')
 
-            parent = None
             name = self.names[args[1] if len(args) == 2 else 'illkirch']
-
-            for h in soup.findAll('h3'):
-                if h.text.lower() == date.lower():
-                    parent = h.parent
-
-            if parent is None:
-                await message.channel.send("Ce menu n'a pas été trouvé")
-                return
-
-            for h in parent.findAll("h4"):
-                if h.text == 'Déjeuner':
-                    parent = h.parent
-
-            content = parent.find('div', {"class": "content-repas"}).find(
-                'div').contents
-
             msg = ["%s à %s" % (date, name), ""]
 
-            if len(content) == 0 or 'Menu non communiqué' in content[0].get_text():
-                await message.channel.send("Tu mangeras pas à midi fdp (y'a "
-                                           "rien sur le menu)")
+            for h in soup.findAll('div', {"class": "menu"}):
+                content = h.find('time', {"class", "menu_date_title"})
+
+                if len(content) == 0:
+                    continue
+
+                found_date = content.get_text()
+
+                if found_date != date:
+                    continue
+
+                content = h.find('ul', {"class": "meal_foodies"}).findAll('li')
+
+                if content is None or len(content) == 0:
+                    continue
+
+                for c in content:
+                    text = c.contents
+
+                    if len(text) < 2:
+                        continue
+
+                    title = text[0].get_text()
+
+                    if 'PERSONNELS' in title or 'Origines' in title:
+                        continue
+
+                    msg.append(title)
+
+                    for li in text[1].contents:
+                        if li.text == '' or li.text == '-':
+                            continue
+                        msg.append("• %s" % li.text)
+
+                    msg.append("")
+
+            if len(msg) == 1:
+                await message.channel.send(
+                    "Tu mangeras pas à midi fdp (y'a "
+                    "rien sur le menu)")
                 return
 
-            for i in range(0, len(content), 2):
-                text = content[i].get_text()
-                if 'PERSONNELS' in text or 'Origines' in text:
-                    continue
-                msg.append(text)
-
-                plats = content[i + 1].findAll('li')
-
-                for p in plats:
-                    if p.text == '' or p.text == '-':
-                        continue
-                    msg.append("• %s" % p.get_text())
-
-                msg.append("")
-
             await message.channel.send("\n".join(msg))
-
 
 intents = discord.Intents.default()
 intents.message_content = True

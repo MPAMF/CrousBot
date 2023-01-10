@@ -1,11 +1,13 @@
-FROM python:3.6.1-alpine
+FROM python:alpine3.17
 RUN apk update \
     apk add \
     build-base \
-    libpq
+    libpq \
+    build-essential
 RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 COPY ./requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 ENV PYTHONUNBUFFERED 1
 COPY . .
