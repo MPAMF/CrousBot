@@ -33,6 +33,11 @@ class CrousBotClient(discord.Client):
 
         content: str = message.content
 
+        if content.startswith('merci mr crous bot'):
+            msg = 'ferme la {0.author.mention}'.format(message)
+            await message.channel.send(msg)
+            return
+
         if content.startswith('!menu'):
             args = content.split(" ")
             url = self.sites["illkirch"]
