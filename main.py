@@ -51,7 +51,7 @@ class CrousBotClient(discord.Client):
                 await message.author.send("Tu es un fils de pute")
                 return
             else:
-                if message.mentions[0].id == 198138552662360073: # little piece of code that we should not be pay attention to..
+                if message.mentions[0].id == 198138552662360073: # little piece of code that we should not pay attention to..
                     msg = "{0.author.mention} est vraiment très très très cool, rien à redire, bon gars...".format(message)
                     await message.channel.send(msg)
                     return
