@@ -3,6 +3,7 @@ import os
 
 import discord
 import requests
+import random
 from babel.dates import format_date
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -37,6 +38,36 @@ class CrousBotClient(discord.Client):
             msg = "ferme la {0.author.mention}".format(message)
             await message.channel.send(msg)
             return
+
+        if content.startswith("Que penses-tu de"):
+            if len(message.mentions) == 0:
+                msg = "fdp, tu dois mentionner quelqu'un"
+                await message.channel.send(msg)
+                await message.author.send("Tu es un fils de pute")
+                return
+            elif len(message.mentions) > 1:
+                msg = "fdp, tu dois mentionner qu'une seule personne"
+                await message.channel.send(msg)
+                await message.author.send("Tu es un fils de pute")
+                return
+            else:
+                if message.mentions[0].id == 198138552662360073: # little piece of code that we should not pay attention to..
+                    msg = "{0.author.mention} est vraiment très très très cool, rien à redire, bon gars...".format(message)
+                    await message.channel.send(msg)
+                    return
+                else:
+                    r = random.random()
+                    if r < 0.5:
+                        msg = "{0.author.mention} est une énorme merde".format(message)
+                    elif r < 0.75:
+                        msg = "{0.author.mention} est vraiment pas ouf".format(message)
+                    elif r < 0.95:
+                        msg = "{0.author.mention} est pas trop trop mal".format(message)
+                    else:
+                        msg = "{0.author.mention} est bien!".format(message)
+                    await message.channel.send(msg)
+                    return
+
 
         if content.startswith("!menu"):
             args = content.split(" ")
