@@ -141,6 +141,17 @@ class CrousBotClient(discord.Client):
 
             await message.channel.send("\n".join(msg))
 
+        if content.startswith("!fish"): #fish react
+            if message.reference == None:
+                msg = "{0.author.mention} fdp, tu dois mentionner faire référence à un message".format(message)
+                await message.channel.send(msg)
+            else:
+                referenced_message = message.reference.resolved 
+                if referenced_message != None:
+                    await referenced_message.reply("https://tenor.com/view/fish-react-fish-react-him-thanos-gif-26859685")
+                    await referenced_message.add_reaction("🐟")
+                    # await message.delete() # should we delete the message the author sent ?? 
+            return
 
 intents = discord.Intents.default()
 intents.message_content = True
