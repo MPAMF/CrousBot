@@ -8,6 +8,8 @@ from babel.dates import format_date
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
+from utils import react_with_emojis
+
 load_dotenv()
 
 
@@ -32,14 +34,14 @@ class CrousBotClient(discord.Client):
         if message.author == self.user:
             return
 
-        content: str = message.content
+        content: str = message.content.lower()
 
         if content.startswith("merci mr crous bot"):
             msg = "ferme la {0.author.mention}".format(message)
             await message.channel.send(msg)
             return
 
-        if content.startswith("Que penses-tu de"):
+        if content.startswith("que penses-tu de"):
             if len(message.mentions) == 0:
                 msg = "fdp, tu dois mentionner quelqu'un"
                 await message.channel.send(msg)
@@ -51,23 +53,27 @@ class CrousBotClient(discord.Client):
                 await message.author.send("Tu es un fils de pute")
                 return
             else:
-                if message.mentions[0].id == 198138552662360073: # little piece of code that we should not pay attention to..
-                    msg = "{0.author.mention} est vraiment très très très cool, rien à redire, bon gars...".format(message)
+                mention = message.mentions[0]
+                if mention.id == 198138552662360073: # little piece of code that we should not be pay attention to..
+                    msg = "{0.mention} est vraiment très très très cool, rien à redire, bon gars...".format(mention)
                     await message.channel.send(msg)
                     return
                 else:
                     r = random.random()
                     if r < 0.5:
-                        msg = "{0.author.mention} est une énorme merde".format(message)
+                        msg = "{0.mention} est une énorme merde".format(mention)
                     elif r < 0.75:
-                        msg = "{0.author.mention} est vraiment pas ouf".format(message)
+                        msg = "{0.mention} est vraiment pas ouf".format(mention)
                     elif r < 0.95:
-                        msg = "{0.author.mention} est pas trop trop mal".format(message)
+                        msg = "{0.mention} est pas trop trop mal".format(mention)
                     else:
-                        msg = "{0.author.mention} est bien!".format(message)
+                        msg = "{0.mention} est bien!".format(mention)
                     await message.channel.send(msg)
                     return
 
+        if content == "je t'aime crous bot":
+            await react_with_emojis(["🇹", "🇬", "🇧", "🇴", "🇿", "🅾️"], message)
+            return;
 
         if content.startswith("!menu"):
             args = content.split(" ")
@@ -135,6 +141,17 @@ class CrousBotClient(discord.Client):
 
             await message.channel.send("\n".join(msg))
 
+        if content.startswith("!fish"): #fish react
+            if message.reference == None:
+                msg = "{0.author.mention} fdp, tu dois mentionner faire référence à un message".format(message)
+                await message.channel.send(msg)
+            else:
+                referenced_message = message.reference.resolved 
+                if referenced_message != None:
+                    await referenced_message.reply("https://tenor.com/view/fish-react-fish-react-him-thanos-gif-26859685")
+                    await referenced_message.add_reaction("🐟")
+                    # await message.delete() # should we delete the message the author sent ?? 
+            return
 
 intents = discord.Intents.default()
 intents.message_content = True
