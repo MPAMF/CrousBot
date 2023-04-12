@@ -8,6 +8,8 @@ from babel.dates import format_date
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
+from utils import react_with_emojis
+
 load_dotenv()
 
 
@@ -32,14 +34,14 @@ class CrousBotClient(discord.Client):
         if message.author == self.user:
             return
 
-        content: str = message.content
+        content: str = message.content.lower()
 
         if content.startswith("merci mr crous bot"):
             msg = "ferme la {0.author.mention}".format(message)
             await message.channel.send(msg)
             return
 
-        if content.startswith("Que penses-tu de"):
+        if content.startswith("que penses-tu de"):
             if len(message.mentions) == 0:
                 msg = "fdp, tu dois mentionner quelqu'un"
                 await message.channel.send(msg)
@@ -69,6 +71,9 @@ class CrousBotClient(discord.Client):
                     await message.channel.send(msg)
                     return
 
+        if content == "je t'aime crous bot":
+            await react_with_emojis(["🇹", "🇬", "🇧", "🇴", "🇿", "🅾️"], message)
+            return;
 
         if content.startswith("!menu"):
             args = content.split(" ")
