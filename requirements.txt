@@ -21,3 +21,4 @@ soupsieve==2.3.2.post1
 terminaltables==3.1.10
 urllib3==1.26.13
 yarl==1.8.2
+ics~=0.7.2

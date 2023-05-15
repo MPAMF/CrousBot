@@ -1,6 +1,7 @@
 import os
 import discord
 
+from commands.cours import Cours
 from commands.merci import Merci
 from commands.ferie import Ferie
 from commands.fish import Fish
@@ -19,7 +20,8 @@ class CrousBotClient(discord.Client):
         f"{prefix}menu": Menu,
         f"{prefix}fish": Fish,
         f"{prefix}ferie": Ferie,
-        f"{prefix}pendu": Pendu
+        f"{prefix}pendu": Pendu,
+        f"{prefix}cours": Cours
     }
 
     async def on_ready(self):
@@ -37,9 +39,6 @@ class CrousBotClient(discord.Client):
                 cmd = self.cmds[key](self, message)
                 await cmd.execute()
                 break
-
-
-
 
 intents = discord.Intents.default()
 intents.message_content = True
