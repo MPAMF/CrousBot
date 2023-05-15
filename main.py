@@ -9,6 +9,7 @@ from commands.menu import Menu
 from commands.pendu import Pendu
 from commands.think import Think
 from commands.love import Love
+from commands.insult import Insult
 
 class CrousBotClient(discord.Client):
     prefix = "!"
@@ -17,11 +18,12 @@ class CrousBotClient(discord.Client):
         "merci mr crous bot": Merci,
         "que penses-tu de": Think,
         "je t'aime crous bot": Love,
+        "ntm crous bot": Insult,
         f"{prefix}menu": Menu,
         f"{prefix}fish": Fish,
         f"{prefix}ferie": Ferie,
         f"{prefix}pendu": Pendu,
-        f"{prefix}cours": Cours
+        f"{prefix}cours": Cours,
     }
 
     async def on_ready(self):
