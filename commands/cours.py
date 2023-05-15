@@ -91,6 +91,6 @@ class Cours:
             rows.append(('separator', ''))
 
         result = self.gen_key_value_pairs(rows)
-        result.insert(0, "Jour %s :" % "sil".upper())
+        result.insert(0, "Jour %s :" % course.upper())
         await self.message.channel.send("```" + "\n".join(result) + "```")
 
