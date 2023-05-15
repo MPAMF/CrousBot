@@ -101,7 +101,7 @@ class Pendu:
 
     async def execute(self):
         words = open("assets/francais.txt", "r")
-        word = random.choice(words.readlines())
+        word = random.choice(words.readlines()).lower().strip()
         guessed_word = ''.join(('■' if l in self.letters else l) for l in word)
 
         wrong_guesses = 0
@@ -114,7 +114,7 @@ class Pendu:
         await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))
 
         def check(message):
-            return message.channel.id == channel.id and len(message.content) == 1 and message.content.lower() in self.letters and not message.content in used_letters
+            return message.channel.id == channel.id and not message.content in used_letters and not message.author == self.client.user
 
         while word != guessed_word and wrong_guesses < self.wrong_guesses_limit:
             
@@ -123,22 +123,30 @@ class Pendu:
             except:
                 await channel.send("Vous avez pris trop de temps pour jouer, c'est fini les fdp")
                 return
-            
-            letter = message.content
-            found_letter = False
-            used_letters.append(letter)
 
-            for [i, l] in enumerate(word):
-                if l == letter:
-                    guessed_word = guessed_word[:i] + l + guessed_word[i+1:]
-                    found_letter = True
+            content = message.content.lower().strip()
 
-            if not found_letter: wrong_guesses += 1  
+            if len(content) > 1:
+                if word == content:
+                    await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
+                    return
+                else:
+                    wrong_guesses += 1
+            else:
+                found_letter = False
+                used_letters.append(content)
+
+                for [i, l] in enumerate(word):
+                    if l == content:
+                        guessed_word = guessed_word[:i] + l + guessed_word[i+1:]
+                        found_letter = True
+
+                if not found_letter: wrong_guesses += 1  
 
             await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))          
 
         if word == guessed_word:
-            await channel.send(f"Bravo fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
+            await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
         else:
             await channel.send(f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment un merde")
         return
