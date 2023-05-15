@@ -94,7 +94,7 @@ class Pendu:
     def __init__(self, client, message):
         self.client = client
         self.message = message
-        self.name = "Ferié"
+        self.name = "Pendu"
         self.description = "Affiche les jours feriés"
         self.wrong_guesses_limit = len(self.ascii_arts)
 
