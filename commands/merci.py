@@ -1,12 +1,18 @@
-class Merci: 
+import discord
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Merci"
-        self.description = ""
+from commands.command import Command
 
-    async def execute(self):
-        msg = "ferme la {0.author.mention}".format(self.message)
-        await self.message.channel.send(msg)
+
+class Merci(Command):
+
+    def __init__(self):
+        super().__init__(
+            name="Merci",
+            description="Remercie CrousBot",
+            author="Paul"
+        )
+
+    async def execute(self, message: discord.Message, client: discord.Client):
+        msg = "ferme la {0.author.mention}".format(message)
+        await message.channel.send(msg)
         return

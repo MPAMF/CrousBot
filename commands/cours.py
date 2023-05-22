@@ -4,19 +4,23 @@ import os
 from datetime import datetime
 from typing import Optional, Dict, List
 
+import discord
 import pytz
 import requests
 from ics import Calendar
 
+from commands.command import Command
 
-class Cours:
+
+class Cours(Command):
     urls: Dict[str, str]
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Cours"
-        self.description = "Affiche les cours du jour"
+    def __init__(self):
+        super().__init__(
+            name="Cours",
+            description="Affiche les cours du jour",
+            author="Paul"
+        )
         self.urls = {
             "sil": os.getenv("CALENDAR_URL_SIL", ""),
             "siris": os.getenv("CALENDAR_URL_SIRIS", ""),
@@ -53,13 +57,13 @@ class Cours:
 
         return result
 
-    async def execute(self):
-        arr = self.message.content.split(" ")
+    async def execute(self, message: discord.Message, client: discord.Client):
+        arr = message.content.split(" ")
         course = "sil" if len(arr) < 2 else arr[1]
         url = self.get_url(course)
 
         if url is None:
-            return await self.message.channel.send("tu déconnes fréro")
+            return await message.channel.send("tu déconnes fréro")
 
         # Fetch the content of the iCalendar file
         response = requests.get(url)
@@ -92,5 +96,5 @@ class Cours:
 
         result = self.gen_key_value_pairs(rows)
         result.insert(0, "Jour %s :" % course.upper())
-        await self.message.channel.send("```" + "\n".join(result) + "```")
+        await message.channel.send("```" + "\n".join(result) + "```")
 
