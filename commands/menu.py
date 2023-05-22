@@ -1,12 +1,15 @@
+import discord
 from babel.dates import format_date
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import requests
 import datetime
 
+from commands.command import Command
+
 load_dotenv()
 
-class Menu:
+class Menu(Command):
 
     sites = {
         "illkirch": "https://www.crous-strasbourg.fr/restaurant/resto-u-illkirch/",
@@ -20,15 +23,15 @@ class Menu:
         "paulappel": "Paul Appel"
     }
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Menu"
-        self.description = "Affiche le menu du Crous"
+    def __init__(self):
+        super().__init__(
+            name="Menu",
+            description="Affiche le menu du Crous",
+            author="Paul"
+        )
 
-    async def execute(self):
-        
-        content: str = self.message.content.lower()
+    async def execute(self, message: discord.Message, client: discord.Client):
+        content: str = message.content.lower()
         
         args = content.split(" ")
         url = self.sites["illkirch"]
@@ -37,7 +40,7 @@ class Menu:
             if args[1] in self.sites.keys():
                 url = self.sites[args[1]]
             else:
-                await self.message.channel.send(
+                await message.channel.send(
                     "Arguments possibles: !menu illkirch/esplanade/paulappel")
                 return
 
@@ -88,9 +91,9 @@ class Menu:
                 msg.append("")
 
         if len(msg) == 1:
-            await self.message.channel.send(
+            await message.channel.send(
                 "Tu mangeras pas à midi fdp (y'a "
                 "rien sur le menu)")
             return
 
-        await self.message.channel.send("\n".join(msg))
+        await message.channel.send("\n".join(msg))

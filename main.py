@@ -1,6 +1,7 @@
 import os
 import discord
 
+from commands.command import Command
 from commands.cours import Cours
 from commands.merci import Merci
 from commands.ferie import Ferie
@@ -12,20 +13,37 @@ from commands.love import Love
 from commands.insult import Insult
 from commands.meme import Meme
 
+
 class CrousBotClient(discord.Client):
     prefix = "!"
 
+    async def top(self, message: discord.Message, client: discord.Client):
+        top = {}
+        for cmd in self.cmds:
+            if not isinstance(self.cmds[cmd], Command): continue
+            author = self.cmds[cmd].author
+            if author is None: continue
+            if author in top: top[author] += 1
+            else: top[author] = 1
+        items = sorted(top.items(), key=lambda item: item[1], reverse=True)
+        msg = "Meilleurs devs du monde:\n"
+        for i in range(len(items)):
+            key, val = items[i]
+            msg += "%d. %s (%d)\n" % (i+1, key, val)
+        await message.channel.send(msg)
+
     cmds = {
-        "merci mr crous bot": Merci,
-        "que penses-tu de": Think,
-        "je t'aime crous bot": Love,
-        "ntm crous bot": Insult,
-        f"{prefix}menu": Menu,
-        f"{prefix}fish": Fish,
-        f"{prefix}ferie": Ferie,
-        f"{prefix}pendu": Pendu,
-        f"{prefix}cours": Cours,
-        f"{prefix}meme": Meme,
+        "merci mr crous bot": Merci(),
+        "que penses-tu de": Think(),
+        "je t'aime crous bot": Love(),
+        "ntm crous bot": Insult(),
+        f"{prefix}menu": Menu(),
+        f"{prefix}fish": Fish(),
+        f"{prefix}ferie": Ferie(),
+        f"{prefix}pendu": Pendu(),
+        f"{prefix}cours": Cours(),
+        f"{prefix}meme": Meme(),
+        f"{prefix}top": top,
     }
 
     async def on_ready(self):
@@ -40,8 +58,12 @@ class CrousBotClient(discord.Client):
 
         for key in self.cmds.keys():
             if content.startswith(key):
-                cmd = self.cmds[key](self, message)
-                await cmd.execute()
+                cmd = self.cmds[key]
+
+                if isinstance(cmd, Command):
+                    await cmd.execute(client=self, message=message)
+                elif callable(cmd):
+                    await cmd(self, client=self, message=message)
                 break
 
 intents = discord.Intents.default()

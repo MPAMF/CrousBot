@@ -1,8 +1,11 @@
 import random
-import requests
-from utils import react_with_emojis
 
-class Pendu:
+import discord
+
+from commands.command import Command
+
+
+class Pendu(Command):
 
     letters = ["a",'à','â','b','c','d','e','é','è','ê','f','g','h','i','j','k','l','m','n','o','ô','p','q','r','s','t','u','û','v','w','x','y','z']
 
@@ -91,35 +94,36 @@ class Pendu:
         '''
     ]
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Pendu"
-        self.description = "Affiche les jours feriés"
+    def __init__(self):
+        super().__init__(
+            name="Pendu",
+            description="Joue au pendu",
+            author="Vincent W"
+        )
         self.wrong_guesses_limit = len(self.ascii_arts)
 
 
-    async def execute(self):
+    async def execute(self, message: discord.Message, client: discord.Client):
         words = open("assets/francais.txt", "r")
         word = random.choice(words.readlines()).lower().strip()
         guessed_word = ''.join(('■' if l in self.letters else l) for l in word)
 
         wrong_guesses = 0
 
-        channel = self.message.channel
+        channel = message.channel
 
         used_letters = []
 
         await channel.send(f"Bienvenu au pendu. Vous (les cons) devez deviner le mot en {self.wrong_guesses_limit} essais, bonne chance")
         await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))
 
-        def check(message):
-            return message.channel.id == channel.id and not message.content in used_letters and not message.author == self.client.user
+        def check(msg):
+            return msg.channel.id == channel.id and not msg.content in used_letters and not msg.author == client.user
 
         while word != guessed_word and wrong_guesses < self.wrong_guesses_limit:
             
             try: 
-                message = await self.client.wait_for('message', check=check, timeout=30.0)
+                message = await client.wait_for('message', check=check, timeout=30.0)
             except:
                 await channel.send("Vous avez pris trop de temps pour jouer, c'est fini les fdp")
                 return
@@ -148,7 +152,7 @@ class Pendu:
         if word == guessed_word:
             await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
         else:
-            await channel.send(f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment un merde")
+            await channel.send(f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment une merde")
         return
 
 

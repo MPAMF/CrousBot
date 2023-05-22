@@ -1,13 +1,17 @@
+import discord
+
+from commands.command import Command
 from utils import react_with_emojis
 
-class Love:
+class Love(Command):
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Love"
-        self.description = "Donne de l'amour à CrousBot"
+    def __init__(self):
+        super().__init__(
+            name="Love",
+            description="Donne de l'amour à CrousBot",
+            author="Vincent W"
+        )
 
-    async def execute(self):
-        await react_with_emojis(["🇹", "🇬", "🇧", "🇴", "🇿", "🅾️"], self.message)
+    async def execute(self, message: discord.Message, client: discord.Client):
+        await react_with_emojis(["🇹", "🇬", "🇧", "🇴", "🇿", "🅾️"], message)
         return

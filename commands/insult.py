@@ -1,13 +1,20 @@
-import random 
-class Insult:
+import random
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Insulte"
-        self.description = "CrousBot t'insulte"
+import discord
 
-    async def execute(self):
+from commands.command import Command
+
+
+class Insult(Command):
+
+    def __init__(self):
+        super().__init__(
+            name="Insulte",
+            description="CrousBot t'insulte",
+            author="Vincent W"
+        )
+
+    async def execute(self, message: discord.Message, client: discord.Client):
         insults = open("assets/insultes.txt", "r")
         insult = random.choice(insults.readlines()).lower().strip()
 
@@ -15,5 +22,5 @@ class Insult:
 
         d = 'd\'' if insult[0] in voyelles else 'de '
 
-        await self.message.channel.send("{0}, va te faire foutre, espèce {1}{2}".format(self.message.author.mention, d, insult))
+        await message.channel.send("{0}, va te faire foutre, espèce {1}{2}".format(message.author.mention, d, insult))
         return
