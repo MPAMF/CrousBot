@@ -10,6 +10,7 @@ from commands.pendu import Pendu
 from commands.think import Think
 from commands.love import Love
 from commands.insult import Insult
+from commands.meme import Meme
 
 class CrousBotClient(discord.Client):
     prefix = "!"
@@ -24,6 +25,7 @@ class CrousBotClient(discord.Client):
         f"{prefix}ferie": Ferie,
         f"{prefix}pendu": Pendu,
         f"{prefix}cours": Cours,
+        f"{prefix}meme": Meme,
     }
 
     async def on_ready(self):
