@@ -1,15 +1,20 @@
+import discord
 import requests
 import datetime
 
-class Ferie:
+from commands.command import Command
 
-    def __init__(self, client, message):
-        self.client = client
-        self.message = message
-        self.name = "Ferié"
-        self.description = "Affiche les jours feriés"
 
-    async def execute(self):
+class Ferie(Command):
+
+    def __init__(self):
+        super().__init__(
+            name="Férié",
+            description="Affiche les jours fériés",
+            author="Vincent W"
+        )
+
+    async def execute(self, message: discord.Message, client: discord.Client):
         d = datetime.date.today()
         today = datetime.datetime(d.year, d.month, d.day)
 
@@ -20,12 +25,12 @@ class Ferie:
             public_holiday = datetime.datetime.strptime(date, "%Y-%m-%d")
                 
             if public_holiday > today: # next holiday
-                await self.message.channel.send(f"Le prochain jour férié pour les bg qui bossent en Alsace-Moselle est le {date} - {day}")
+                await message.channel.send(f"Le prochain jour férié pour les bg qui bossent en Alsace-Moselle est le {date} - {day}")
                 break
             
         for (date, day) in ferie_metropole.items():
             public_holiday = datetime.datetime.strptime(date, "%Y-%m-%d")
                 
             if public_holiday > today: # next holiday
-                await self.message.channel.send(f"Le prochain jour férié pour les crasseux qui bossent autre part est le {date} - {day}")
+                await message.channel.send(f"Le prochain jour férié pour les crasseux qui bossent autre part est le {date} - {day}")
                 break
