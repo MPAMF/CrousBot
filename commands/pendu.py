@@ -102,8 +102,15 @@ class Pendu(Command):
         )
         self.wrong_guesses_limit = len(self.ascii_arts)
 
+        self.game_in_progress = False
+
 
     async def execute(self, message: discord.Message, client: discord.Client):
+        
+        if self.game_in_progress:
+            await message.author.send("Quelqu'un a déjà lancé une partie de pendu enculé")
+            return
+
         words = open("assets/francais.txt", "r")
         word = random.choice(words.readlines()).lower().strip()
         guessed_word = ''.join(('■' if l in self.letters else l) for l in word)
@@ -120,11 +127,15 @@ class Pendu(Command):
         def check(msg):
             return msg.channel.id == channel.id and not msg.content in used_letters and not msg.author == client.user
 
-        while word != guessed_word and wrong_guesses < self.wrong_guesses_limit:
+        self.game_in_progress = True
+
+        while word != guessed_word and wrong_guesses < self.wrong_guesses_limit - 1:
             
             try: 
                 message = await client.wait_for('message', check=check, timeout=30.0)
+                if message.content.startswith('!'): continue
             except:
+                self.game_in_progress = False
                 await channel.send("Vous avez pris trop de temps pour jouer, c'est fini les fdp")
                 return
 
@@ -149,6 +160,7 @@ class Pendu(Command):
 
             await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))          
 
+        self.game_in_progress = False
         if word == guessed_word:
             await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
         else:
