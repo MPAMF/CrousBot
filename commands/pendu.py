@@ -1,9 +1,8 @@
 import random
-
 import discord
 
 from commands.command import Command
-
+from typing import List
 
 class Pendu(Command):
 
@@ -101,7 +100,6 @@ class Pendu(Command):
             author="Vincent W"
         )
         self.wrong_guesses_limit = len(self.ascii_arts)
-
         self.game_in_progress = False
 
 
@@ -129,11 +127,12 @@ class Pendu(Command):
 
         self.game_in_progress = True
 
-        while word != guessed_word and wrong_guesses < self.wrong_guesses_limit - 1:
+        while self.game_in_progress and word != guessed_word and wrong_guesses < self.wrong_guesses_limit - 1:
             
             try: 
                 message = await client.wait_for('message', check=check, timeout=30.0)
-                if message.content.startswith('!'): continue
+                if message.content.startswith('!'): 
+                    continue
             except:
                 self.game_in_progress = False
                 await channel.send("Vous avez pris trop de temps pour jouer, c'est fini les fdp")
@@ -143,7 +142,7 @@ class Pendu(Command):
 
             if len(content) > 1:
                 if word == content:
-                    await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
+                    await self.end_game(True, message, word)
                     return
                 else:
                     wrong_guesses += 1
@@ -158,16 +157,18 @@ class Pendu(Command):
 
                 if not found_letter: wrong_guesses += 1  
 
-            await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))          
+            await channel.send(self.build_message(guessed_word, wrong_guesses, used_letters))
 
+        await self.end_game(word == guessed_word, message, word)
+
+
+    async def end_game(self, hasWon: bool, message: discord.Message, word: str):
         self.game_in_progress = False
-        if word == guessed_word:
-            await channel.send(f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)")
-        else:
-            await channel.send(f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment une merde")
-        return
-
-
-    def build_message(self, guessed_word, guesses, used_letters):
+        await message.channel.send(
+            f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)" if hasWon
+            else f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment une merde"
+        )
+        
+    def build_message(self, guessed_word: str, guesses: int, used_letters: List[str]):
         return f''' ```\n {self.ascii_arts[guesses]}\n MOT: {guessed_word}\n LETTRES: {'-'.join(used_letters)}```
                 '''
