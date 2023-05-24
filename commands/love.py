@@ -12,6 +12,6 @@ class Love(Command):
             author="Vincent W"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         await react_with_emojis(["🇹", "🇬", "🇧", "🇴", "🇿", "🅾️"], message)
         return

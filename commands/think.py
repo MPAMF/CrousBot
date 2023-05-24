@@ -14,7 +14,7 @@ class Think(Command):
             author="Vincent W"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         if len(message.mentions) == 0:
             msg = "fdp, tu dois mentionner quelqu'un"
             await message.channel.send(msg)

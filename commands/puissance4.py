@@ -17,7 +17,7 @@ class Puissance4(Command):
         self.start_line = False
         self.current_games = []
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         channel = self.message.channel
 
         arr = self.message.content.split(" ")

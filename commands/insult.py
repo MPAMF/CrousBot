@@ -14,7 +14,7 @@ class Insult(Command):
             author="Vincent W"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         insults = open("assets/insultes.txt", "r")
         insult = random.choice(insults.readlines()).lower().strip()
 

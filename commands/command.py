@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 import discord
 
@@ -18,7 +18,7 @@ class Command:
         self.description = description
         self.help_msg = help_msg
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         pass
 
     def __str__(self):
