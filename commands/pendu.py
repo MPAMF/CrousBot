@@ -4,6 +4,9 @@ import discord
 from commands.command import Command
 from typing import List
 
+from pony.orm import *
+from models import User
+
 class Pendu(Command):
 
     letters = ["a",'à','â','b','c','d','e','é','è','ê','f','g','h','i','j','k','l','m','n','o','ô','p','q','r','s','t','u','û','v','w','x','y','z']
@@ -164,6 +167,10 @@ class Pendu(Command):
 
     async def end_game(self, hasWon: bool, message: discord.Message, word: str):
         self.game_in_progress = False
+
+        if (hasWon):
+            self.add_victory(message.author.id)
+
         await message.channel.send(
             f"Bravo {message.author.mention}, fils de con, t'as trouvé le mot: **{word}** (pas si dur que ça en vrai)" if hasWon
             else f"Tu n'as pas trouvé le mot: **{word}**, t'es vraiment une merde"
@@ -172,3 +179,16 @@ class Pendu(Command):
     def build_message(self, guessed_word: str, guesses: int, used_letters: List[str]):
         return f''' ```\n {self.ascii_arts[guesses]}\n MOT: {guessed_word}\n LETTRES: {'-'.join(used_letters)}```
                 '''
+
+
+    @db_session
+    def add_victory(self, user_id):
+
+        query = select(u for u in User if u.id == user_id)
+
+        if (len(query)) == 0:
+            # problème => le joueur ayant gagné n'est sans doute pas enregistré
+            return
+        
+        user = list(query)[0]
+        user.pendu_completed += 1

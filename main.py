@@ -15,6 +15,7 @@ from commands.meme import Meme
 
 from commands.db.register import Register
 from commands.db.work import Work
+from commands.db.profile import Profile
 
 from models import db
 
@@ -50,7 +51,8 @@ class CrousBotClient(discord.Client):
         f"{prefix}top": top,
         
         f"{prefix}register": Register(),
-        f"{prefix}work": Work()
+        f"{prefix}work": Work(),
+        f"{prefix}profile": Profile()
     }
 
     async def on_ready(self):

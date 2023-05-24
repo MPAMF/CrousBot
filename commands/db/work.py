@@ -45,43 +45,41 @@ class Work(Command):
         if work_type == "freelance":
             last_worked = time_limit.freelance
             diff = datetime.now() - last_worked
-            
-            seconds = diff.total_seconds()
-            hours   = seconds // 3600
-            minutes = (seconds - (hours * 3600)) // 60
-            seconds = seconds - (hours * 3600) - minutes * 60
 
-            if (hours > 1): 
-                self.send_worked_message(message, work_type, 10)
+            work_delay = timedelta(hours=1)
+
+            if (diff > work_delay): 
+                await self.send_worked_message(message, work_type, 10)
                 user.money += 10
                 time_limit.freelance = datetime.now()
             else:
-                await self.send_delay_message(message, work_type, datetime.now() + timedelta(hours=1) - diff)
+                await self.send_delay_message(message, work_type, timedelta(hours=1) - diff)
                 return
             
         elif work_type == "alternance":
             
-            last_worked = time_limit.freelance
+            last_worked = time_limit.alternance
             diff = datetime.now() - last_worked
             
-            seconds = diff.total_seconds()
-            hours   = seconds // 3600
-            minutes = (seconds - (hours * 3600)) // 60
-            seconds = seconds - (hours * 3600) - minutes * 60
+            work_delay = timedelta(hours=6)
 
-            if (hours > 6): 
-                self.send_worked_message(message, work_type, 100)
+            if (diff > work_delay): 
+                await self.send_worked_message(message, work_type, 100)
                 user.money += 100
                 time_limit.freelance = datetime.now()
             else:
-                await self.send_delay_message(message, work_type, datetime.now() + timedelta(hours=1) - diff)
+                await self.send_delay_message(message, work_type, timedelta(hours=6) - diff)
                 return
     
 
     async def send_delay_message(self, message, work_type, delay):
-        await message.channel.send(f"{message.author.mention} fdp, tu ne pourras travailler en {work_type} que dans {delay}h")
+        
+        hours, remainder = divmod(delay.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        
+        await message.channel.send(f"{message.author.mention} fdp, tu ne pourras travailler en {work_type} que dans {hours}h{minutes}min{seconds}s")
         return
     
     async def send_worked_message(self, message, work_type, money):
-        await message.channel.send(f"{message.author.mention} bravo fdp, tu viens de gagner {money} en travaillant en {work_type}!")
+        await message.channel.send(f"{message.author.mention} bravo fdp, tu viens de gagner {money}💸 en travaillant en {work_type}!")
         return
