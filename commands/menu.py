@@ -30,7 +30,7 @@ class Menu(Command):
             author="Paul"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         content: str = message.content.lower()
         
         args = content.split(" ")

@@ -12,7 +12,7 @@ class Merci(Command):
             author="Paul"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         msg = "ferme la {0.author.mention}".format(message)
         await message.channel.send(msg)
         return

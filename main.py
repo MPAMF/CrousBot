@@ -13,6 +13,10 @@ from commands.love import Love
 from commands.insult import Insult
 from commands.meme import Meme
 
+from commands.db.register import Register
+from commands.db.work import Work
+
+from models import db
 
 class CrousBotClient(discord.Client):
     prefix = "!"
@@ -44,6 +48,9 @@ class CrousBotClient(discord.Client):
         f"{prefix}cours": Cours(),
         f"{prefix}meme": Meme(),
         f"{prefix}top": top,
+        
+        f"{prefix}register": Register(),
+        f"{prefix}work": Work()
     }
 
     async def on_ready(self):
@@ -61,7 +68,7 @@ class CrousBotClient(discord.Client):
                 cmd = self.cmds[key]
 
                 if isinstance(cmd, Command):
-                    await cmd.execute(client=self, message=message)
+                    await cmd.execute(client=self, message=message, options=content.split(" ")[1:])
                 elif callable(cmd):
                     await cmd(self, client=self, message=message)
                 break

@@ -23,7 +23,7 @@ class Meme(Command):
         meme_data = data['data']['children'][meme_index]['data']
         return meme_data['title'], meme_data['url']
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         title, url = self.get_meme()
         embed = discord.Embed(title=title, color=discord.Color.blue())
         embed.set_image(url=url)

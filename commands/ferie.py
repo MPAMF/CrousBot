@@ -14,7 +14,7 @@ class Ferie(Command):
             author="Vincent W"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         d = datetime.date.today()
         today = datetime.datetime(d.year, d.month, d.day)
 

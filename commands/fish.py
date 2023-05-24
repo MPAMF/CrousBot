@@ -12,7 +12,7 @@ class Fish(Command):
             author="Vincent W"
         )
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         if message.reference is None:
             msg = "{0.author.mention} fdp, tu dois mentionner faire référence à un message".format(message)
             await message.channel.send(msg)

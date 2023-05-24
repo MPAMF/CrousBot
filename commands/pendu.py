@@ -103,7 +103,7 @@ class Pendu(Command):
         self.game_in_progress = False
 
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         
         if self.game_in_progress:
             await message.author.send("Quelqu'un a déjà lancé une partie de pendu enculé")

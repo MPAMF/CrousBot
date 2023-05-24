@@ -57,7 +57,7 @@ class Cours(Command):
 
         return result
 
-    async def execute(self, message: discord.Message, client: discord.Client):
+    async def execute(self, message: discord.Message, client: discord.Client, **kwargs):
         arr = message.content.split(" ")
         course = "sil" if len(arr) < 2 else arr[1]
         url = self.get_url(course)
