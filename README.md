@@ -22,3 +22,8 @@ Create a virtualenv.
 
 Then create the container using docker-compose:
 ```docker compose up```
+
+
+## Modifying the models
+
+After modifying a model, you need to manually alter the table(s) in the DB

@@ -17,7 +17,8 @@ from commands.db.register import Register
 from commands.db.work import Work
 from commands.db.profile import Profile
 
-from models import db
+from models import db, User
+from pony.orm import *
 
 class CrousBotClient(discord.Client):
     prefix = "!"
@@ -65,15 +66,34 @@ class CrousBotClient(discord.Client):
 
         content: str = message.content.lower()
 
+        xp = 5
+
         for key in self.cmds.keys():
             if content.startswith(key):
                 cmd = self.cmds[key]
 
                 if isinstance(cmd, Command):
                     await cmd.execute(client=self, message=message, options=content.split(" ")[1:])
+                    xp = 10
                 elif callable(cmd):
                     await cmd(self, client=self, message=message)
+                    xp = 10
                 break
+
+        if len(message.attachments) > 0:
+            xp += 5
+
+        self.give_xp_to_user(message.author.id, xp)
+
+    @db_session
+    def give_xp_to_user(self, user_id, xp):
+        user_query = select(u for u in User if u.id == user_id)
+
+        if len(user_query) == 0: return
+
+        user = list(user_query)[0]
+        user.xp += xp
+
 
 intents = discord.Intents.default()
 intents.message_content = True

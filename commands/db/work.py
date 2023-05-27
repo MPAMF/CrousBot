@@ -66,7 +66,7 @@ class Work(Command):
             if (diff > work_delay): 
                 await self.send_worked_message(message, work_type, 100)
                 user.money += 100
-                time_limit.freelance = datetime.now()
+                time_limit.alternance = datetime.now()
             else:
                 await self.send_delay_message(message, work_type, timedelta(hours=6) - diff)
                 return
